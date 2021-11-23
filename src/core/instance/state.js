@@ -286,6 +286,7 @@ function initMethods (vm: Component, methods: Object) {
         )
       }
     }
+    // 绑定method的this为当前的vm
     vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm)
   }
 }

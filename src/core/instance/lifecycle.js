@@ -28,12 +28,13 @@ export function setActiveInstance(vm: Component) {
     activeInstance = prevActiveInstance
   }
 }
-
+// 初始化vm的parent为非抽象的祖先和相应的属性
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
   // locate first non-abstract parent
   let parent = options.parent
+  // 找到不抽象的最近祖先，再把自己加到父亲的$children里
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
@@ -42,6 +43,7 @@ export function initLifecycle (vm: Component) {
   }
 
   vm.$parent = parent
+  // 绑定根节点
   vm.$root = parent ? parent.$root : vm
 
   vm.$children = []

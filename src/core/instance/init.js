@@ -38,6 +38,7 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
+      // 合并策略
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
@@ -52,11 +53,16 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
+    // 初始化vm的parent为非抽象的祖先和相应的属性
     initLifecycle(vm)
+    // 初始化父亲的监听事件
     initEvents(vm)
+    // 初始化slots，$createElement,_c相关属性 并定于$attrs,$listeners为响应式
     initRender(vm)
+    // 调用beforeCreate钩子组
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props
+    // 依次初始化_props methods _data computed watch
     initState(vm)
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
@@ -69,6 +75,7 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     if (vm.$options.el) {
+      // 在里面会调用组件其他生命钩子
       vm.$mount(vm.$options.el)
     }
   }

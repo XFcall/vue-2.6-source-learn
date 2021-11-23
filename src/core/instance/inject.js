@@ -50,6 +50,7 @@ export function resolveInject (inject: any, vm: Component): ?Object {
       if (key === '__ob__') continue
       const provideKey = inject[key].from
       let source = vm
+      // 往祖先上找
       while (source) {
         if (source._provided && hasOwn(source._provided, provideKey)) {
           result[key] = source._provided[provideKey]
@@ -57,6 +58,7 @@ export function resolveInject (inject: any, vm: Component): ?Object {
         }
         source = source.$parent
       }
+      // 在祖先上找不到的话就调用inject[key].default
       if (!source) {
         if ('default' in inject[key]) {
           const provideDefault = inject[key].default

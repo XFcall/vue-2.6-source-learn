@@ -14,6 +14,7 @@ export function initEvents (vm: Component) {
   vm._hasHookEvent = false
   // init parent attached events
   const listeners = vm.$options._parentListeners
+  // 取得父亲的监听事件进行绑定
   if (listeners) {
     updateComponentListeners(vm, listeners)
   }

@@ -352,6 +352,7 @@ export function stateMixin (Vue: Class<Component>) {
     options?: Object
   ): Function {
     const vm: Component = this
+    // cb 是对象的在进行一层转换
     if (isPlainObject(cb)) {
       return createWatcher(vm, expOrFn, cb, options)
     }
@@ -364,6 +365,7 @@ export function stateMixin (Vue: Class<Component>) {
       invokeWithErrorHandling(cb, vm, [watcher.value], vm, info)
       popTarget()
     }
+    // 放回取消函数
     return function unwatchFn () {
       watcher.teardown()
     }

@@ -54,11 +54,13 @@ export function eventsMixin (Vue: Class<Component>) {
   const hookRE = /^hook:/
   Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
     const vm: Component = this
+    // 数组的话 对每一项重新调用绑定
     if (Array.isArray(event)) {
       for (let i = 0, l = event.length; i < l; i++) {
         vm.$on(event[i], fn)
       }
     } else {
+      // 加入当前实例vm._events[event]对应的事件组上
       (vm._events[event] || (vm._events[event] = [])).push(fn)
       // optimize hook:event cost by using a boolean flag marked at registration
       // instead of a hash lookup
@@ -73,6 +75,7 @@ export function eventsMixin (Vue: Class<Component>) {
     const vm: Component = this
     function on () {
       vm.$off(event, on)
+      // 闭包引用
       fn.apply(vm, arguments)
     }
     on.fn = fn
@@ -83,6 +86,7 @@ export function eventsMixin (Vue: Class<Component>) {
   Vue.prototype.$off = function (event?: string | Array<string>, fn?: Function): Component {
     const vm: Component = this
     // all
+    // 没传递参数就重置vm._events
     if (!arguments.length) {
       vm._events = Object.create(null)
       return vm
@@ -106,6 +110,7 @@ export function eventsMixin (Vue: Class<Component>) {
     // specific handler
     let cb
     let i = cbs.length
+    // 对特定事件在相应的事件组删除 只删除一次，事件组重复的得调用多次
     while (i--) {
       cb = cbs[i]
       if (cb === fn || cb.fn === fn) {
@@ -116,6 +121,7 @@ export function eventsMixin (Vue: Class<Component>) {
     return vm
   }
 
+  // event 后面我触发事件的参数
   Vue.prototype.$emit = function (event: string): Component {
     const vm: Component = this
     if (process.env.NODE_ENV !== 'production') {

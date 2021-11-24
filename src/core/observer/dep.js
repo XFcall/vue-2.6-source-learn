@@ -62,5 +62,6 @@ export function pushTarget (target: ?Watcher) {
 
 export function popTarget () {
   targetStack.pop()
+  // 全局Dep.target重新指向最后一个
   Dep.target = targetStack[targetStack.length - 1]
 }

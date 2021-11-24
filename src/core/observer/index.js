@@ -36,6 +36,7 @@ export function toggleObserving (value: boolean) {
  */
 export class Observer {
   value: any;
+  // 依赖管理
   dep: Dep;
   vmCount: number; // number of vms that have this object as root $data
 
@@ -44,12 +45,14 @@ export class Observer {
     this.dep = new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
+    // 对value类型为array 和 object类型分别处理
     if (Array.isArray(value)) {
       if (hasProto) {
         protoAugment(value, arrayMethods)
       } else {
         copyAugment(value, arrayMethods, arrayKeys)
       }
+      // 对数组内的Object对象都进行侦测
       this.observeArray(value)
     } else {
       this.walk(value)
@@ -153,6 +156,7 @@ export function defineReactive (
     val = obj[key]
   }
 
+  // val 不是对象的话就为undefined
   let childOb = !shallow && observe(val)
   Object.defineProperty(obj, key, {
     enumerable: true,
@@ -173,6 +177,7 @@ export function defineReactive (
     set: function reactiveSetter (newVal) {
       const value = getter ? getter.call(obj) : val
       /* eslint-disable no-self-compare */
+      // 也排除NaN
       if (newVal === value || (newVal !== newVal && value !== value)) {
         return
       }
